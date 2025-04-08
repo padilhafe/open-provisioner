@@ -1,1 +1,80 @@
+# Python bytecode
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Caches and logs
+.cache/
+*.log
+*.pid
+
+# Virtual environments
+.venv/
+venv/
+env/
+ENV/
+
+# Poetry
+poetry.lock
+# (comente acima se quiser versionar o lock)
+
+# Editor settings
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# dotenv files
 .env
+.env.*
+
+# Testing & coverage
+htmlcov/
+.tox/
+.nox/
+.pytest_cache/
+.coverage
+coverage.xml
+
+# Typing tools
+.mypy_cache/
+.pyright/
+
+# Build artifacts
+build/
+dist/
+*.egg-info/
+
+# Local DB files
+*.sqlite3
+*.db
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Backups & misc
+*.bak
+*.orig
+
+# Docker
+**/Dockerfile
+docker-compose.override.yml
+.docker/
+.dockerignore
+docker-compose*.yml
+docker-compose*.yaml
+**/.container-logs/
+**/.docker-cache/
+*.tar
+*.img
+*.iso
+*.qcow2
+*.vmdk
+*.ovf
+
+# Logs
+logs/
