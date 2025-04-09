@@ -21,7 +21,7 @@ DB_PASSWORD=test_pass
 
 - Comando para rodar o projeto:
 ```
-docker compose up -d
+docker compose -f docker-compose.yml --env-file .env.prod up -d
 poetry run alembic upgrade head
 poetry run uvicorn app.main:app --reload --app-dir src
 ```

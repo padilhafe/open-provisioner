@@ -2,8 +2,6 @@ services:
   mariadb-test:
     image: mariadb:11
     container_name: openprovisioner-testdb
-    env_file:
-      - .env.dev
     environment:
       MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
       MYSQL_DATABASE: ${DB_NAME}
