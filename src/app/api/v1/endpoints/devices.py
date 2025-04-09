@@ -1,3 +1,5 @@
+# app/api/v1/endpoints/devices.py
+
 from fastapi import APIRouter, Depends, HTTPException, status
 from app.db.dependencies import get_db
 from app.schemas.device_schema import DeviceCreate, DeviceUpdate, DeviceOut

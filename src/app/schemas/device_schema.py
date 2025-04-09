@@ -1,3 +1,5 @@
+# app/schemas/device_schema.py
+
 from pydantic import BaseModel, EmailStr, ConfigDict
 from ipaddress import IPv4Address
 from app.core.enums import DeviceType, SnmpVersion

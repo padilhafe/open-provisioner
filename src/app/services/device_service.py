@@ -1,3 +1,5 @@
+# app/services/device_service.py
+
 from databases import Database
 from sqlalchemy import select
 from app.models.device import Device
@@ -33,4 +35,4 @@ async def update_device(db: Database, device_id: int, updates: DeviceUpdate):
 async def delete_device(db: Database, device_id: int):
     query = Device.__table__.delete().where(Device.id == device_id)
     result = await db.execute(query)
-    return result is not None
+    return result > 0

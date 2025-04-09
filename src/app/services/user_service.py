@@ -1,3 +1,5 @@
+# app/srecices/user_service.py
+
 from databases import Database
 from sqlalchemy import select
 from app.models.user import User
@@ -23,12 +25,12 @@ async def update_user(db: Database, user_id: int, updates: UserUpdate):
         User.__table__
         .update()
         .where(User.id == user_id)
-        .values(**updates.dict(exclude_unset=True))
+        .values(**updates.model_dump(exclude_unset=True))
     )
     await db.execute(query)
     return await get_user_by_id(db, user_id)
 
-async def delete_user(db: Database, user_id: int):
+async def delete_user(db: Database, user_id: int) -> bool:
     query = User.__table__.delete().where(User.id == user_id)
     result = await db.execute(query)
-    return result is not None
+    return result > 0

@@ -1,3 +1,5 @@
+# app/api/v1/endpoints/users.py
+
 from fastapi import APIRouter, Depends, HTTPException, status
 from app.db.dependencies import get_db
 from app.schemas.user_schema import UserCreate, UserUpdate, UserOut
