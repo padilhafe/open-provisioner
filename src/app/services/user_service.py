@@ -5,9 +5,8 @@ from app.schemas.user_schema import UserCreate, UserUpdate
 from app.models.user import User
 
 async def create_user(db: Database, user_data: UserCreate) -> User:
-    query = User.__table__.insert().values(**user_data.dict())
-    user_id = await db.execute(query)
-    return await get_user_by_id(db, user_id)
+    query = User.__table__.insert().values(**user_data.model_dump())
+    return await database.execute(query=query)
 
 async def get_users(db: Database):
     query = select(User)

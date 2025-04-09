@@ -22,7 +22,7 @@ DB_NAME = os.getenv("DB_NAME")
 DATABASE_URL = f"mysql+pymysql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
 config.set_main_option("sqlalchemy.url", DATABASE_URL)
 
-from src.app.models import user as models
+from app.models import user as models
 target_metadata = models.Base.metadata
 
 def run_migrations_offline():
