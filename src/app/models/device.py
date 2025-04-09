@@ -1,4 +1,7 @@
+# app/models/device.py
+
 from sqlalchemy import Column, Integer, String
+from sqlalchemy.orm import relationship
 from typing import Optional
 from app.models import Base
 
@@ -11,3 +14,6 @@ class Device(Base):
     mgmt_ipv4: Optional[str] = Column(String(16), unique=True, index=True, nullable=True)
     snmp_version: Optional[int] = Column(Integer, index=True, nullable=True)
     snmp_community: Optional[str] = Column(String(32), index=True, nullable=True)
+
+    # Device has many CPEs
+    cpes = relationship("CPE", back_populates="device")

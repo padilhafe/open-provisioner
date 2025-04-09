@@ -19,7 +19,7 @@ fileConfig(config.config_file_name)
 
 # Importa os modelos (todos que devem ser refletidos no banco)
 from app.models import Base
-from app.models import user, device  # importe todos os modelos explicitamente
+from app.models import user, device, customer, cpe
 
 target_metadata = Base.metadata
 
