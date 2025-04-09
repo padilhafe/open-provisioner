@@ -65,8 +65,6 @@ dist/
 docker-compose.override.yml
 .docker/
 .dockerignore
-docker-compose*.yml
-docker-compose*.yaml
 **/.container-logs/
 **/.docker-cache/
 *.tar

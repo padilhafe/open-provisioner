@@ -6,25 +6,16 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '.
 
 from logging.config import fileConfig
 from sqlalchemy import engine_from_config, pool
-from dotenv import load_dotenv
 from alembic import context
 
-# Load environment variables
-load_dotenv()
+from app.core.config import Settings
 
 # Alembic config
 config = context.config
 fileConfig(config.config_file_name)
 
-# Get database credentials from environment
-DB_USER = os.getenv("DB_USER")
-DB_PASSWORD = os.getenv("DB_PASSWORD")
-DB_HOST = os.getenv("DB_HOST")
-DB_PORT = os.getenv("DB_PORT")
-DB_NAME = os.getenv("DB_NAME")
-
-DATABASE_URL = f"mysql+pymysql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
-config.set_main_option("sqlalchemy.url", DATABASE_URL)
+# Import DATABASE_URL from settings
+config.set_main_option("sqlalchemy.url", Settings.DATABASE_URL)
 
 # Import models after path adjustment
 from app.models import user as models
