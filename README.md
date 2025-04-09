@@ -36,3 +36,8 @@ poetry run alembic upgrade head
 ```
 poetry run pytest
 ```
+
+- Comando para gerar nova migration
+```
+poetry run alembic revision --autogenerate -m "create TABLE table"
+```

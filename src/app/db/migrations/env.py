@@ -1,29 +1,32 @@
-import sys
 import os
-
-# Syspath fix to app import work correctly
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '..')))
-
+import sys
 from logging.config import fileConfig
 from sqlalchemy import engine_from_config, pool
 from alembic import context
 
+# Ajusta o sys.path para conseguir importar o app corretamente
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '..')))
+
+# Importa configurações do projeto
 from app.core.config import Settings
 
-# Alembic config
+# Define URL do banco para o Alembic
 config = context.config
-fileConfig(config.config_file_name)
-
-# Import DATABASE_URL from settings
 config.set_main_option("sqlalchemy.url", Settings.DATABASE_URL)
 
-# Import models after path adjustment
-from app.models import user as models
-target_metadata = models.Base.metadata
+# Configura logging
+fileConfig(config.config_file_name)
 
-def run_migrations_offline():
+# Importa os modelos (todos que devem ser refletidos no banco)
+from app.models import Base
+from app.models import user, device  # importe todos os modelos explicitamente
+
+target_metadata = Base.metadata
+
+def run_migrations_offline() -> None:
+    """Executa as migrações em modo offline (sem conectar no banco)."""
     context.configure(
-        url=DATABASE_URL,
+        url=Settings.DATABASE_URL,
         target_metadata=target_metadata,
         literal_binds=True,
         dialect_opts={"paramstyle": "named"},
@@ -31,12 +34,14 @@ def run_migrations_offline():
     with context.begin_transaction():
         context.run_migrations()
 
-def run_migrations_online():
+def run_migrations_online() -> None:
+    """Executa as migrações conectando ao banco."""
     connectable = engine_from_config(
         config.get_section(config.config_ini_section),
         prefix="sqlalchemy.",
         poolclass=pool.NullPool,
     )
+
     with connectable.connect() as connection:
         context.configure(
             connection=connection,
@@ -45,6 +50,7 @@ def run_migrations_online():
         with context.begin_transaction():
             context.run_migrations()
 
+# Decide se roda online ou offline
 if context.is_offline_mode():
     run_migrations_offline()
 else:
