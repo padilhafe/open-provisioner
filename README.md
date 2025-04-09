@@ -1,5 +1,24 @@
 # OpenProvisioner
 
+- Criar o arquivo de .env informando qual o tipo de ambiente
+```
+ENV=dev
+```
+
+- Criar o arquivo .env.ambiente com as configurações
+```
+# Project Settings
+PROJECT_NAME=OpenProvisioner
+
+# Database Config
+DB_ENGINE=mariadb
+DB_HOST=localhost
+DB_PORT=3307
+DB_NAME=test_db
+DB_USER=test_user
+DB_PASSWORD=test_pass
+```
+
 - Comando para rodar o projeto:
 ```
 docker compose up -d
