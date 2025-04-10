@@ -15,5 +15,4 @@ class Device(Base):
     snmp_version: Optional[int] = Column(Integer, index=True, nullable=True)
     snmp_community: Optional[str] = Column(String(32), index=True, nullable=True)
 
-    # Device has many CPEs
-    cpes = relationship("CPE", back_populates="device")
+    cpes = relationship("Cpe", back_populates="device")

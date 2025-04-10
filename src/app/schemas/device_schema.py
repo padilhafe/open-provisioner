@@ -1,7 +1,8 @@
 # app/schemas/device_schema.py
 
-from pydantic import BaseModel, EmailStr, ConfigDict
+from pydantic import BaseModel, ConfigDict
 from ipaddress import IPv4Address
+from typing import Optional
 from app.core.enums import DeviceType, SnmpVersion
 
 class DeviceCreate(BaseModel):
@@ -12,11 +13,11 @@ class DeviceCreate(BaseModel):
     snmp_community: str
 
 class DeviceUpdate(BaseModel):
-    name: str | None = None
-    device_type: DeviceType | None = None
-    mgmt_ipv4: IPv4Address | None = None
-    snmp_version: SnmpVersion | None = None
-    snmp_community: str
+    name: Optional[str] = None
+    device_type: Optional[DeviceType] = None
+    mgmt_ipv4: Optional[IPv4Address] = None
+    snmp_version: Optional[SnmpVersion] = None
+    snmp_community: Optional[str] = None
 
 class DeviceOut(BaseModel):
     id: int
@@ -26,6 +27,4 @@ class DeviceOut(BaseModel):
     snmp_version: SnmpVersion
     snmp_community: str
 
-    model_config = ConfigDict(
-        from_attributes=True
-    )
+    model_config = ConfigDict(from_attributes=True)

@@ -22,8 +22,10 @@ def upgrade() -> None:
     op.create_table(
         'cpes',
         sa.Column('id', sa.Integer, primary_key=True, index=True),
+        sa.Column('state', sa.String(length=32), nullable=False),
+        sa.Column('cpe_type', sa.String(length=16), nullable=False),
         sa.Column('customer_id', sa.Integer, sa.ForeignKey('customers.id'), nullable=False),
-        sa.Column('device_id', sa.Integer, sa.ForeignKey('devices.id'), nullable=False)
+        sa.Column('device_id', sa.Integer, sa.ForeignKey('devices.id'), nullable=False),
     )
 
 def downgrade() -> None:

@@ -7,12 +7,11 @@ from app.models import Base
 class Cpe(Base):
     __tablename__ = "cpes"
 
-    id = Column(Integer, primary_key=True, index=True)
+    id = Column(Integer, primary_key=True)
+    cpe_type = Column(String)
+    state = Column(String)
+    customer_id = Column(Integer, ForeignKey("customers.id"), unique=True)
+    device_id = Column(Integer, ForeignKey("devices.id"))
 
-    # Foreign keys
-    customer_id = Column(Integer, ForeignKey("customers.id"), nullable=False)
-    device_id = Column(Integer, ForeignKey("devices.id"), nullable=False)
-
-    # Relationships
     customer = relationship("Customer", back_populates="cpe")
     device = relationship("Device", back_populates="cpes")

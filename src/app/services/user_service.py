@@ -1,36 +1,36 @@
 # app/srecices/user_service.py
 
-from databases import Database
-from sqlalchemy import select
+from sqlalchemy import select, update as sqlalchemy_update, delete as sqlalchemy_delete
+from sqlalchemy.ext.asyncio import AsyncSession
 from app.models.user import User
 from app.schemas.user_schema import UserCreate, UserUpdate
-from app.models.user import User
 
-async def create_user(db: Database, user_data: UserCreate) -> User:
-    query = User.__table__.insert().values(**user_data.model_dump())
-    user_id = await db.execute(query)
-    return await get_user_by_id(db, user_id)
+async def create_user(session: AsyncSession, user_data: UserCreate) -> User:
+    user = User(**user_data.model_dump())
+    session.add(user)
+    await session.commit()
+    await session.refresh(user)
+    return user
 
-async def get_users(db: Database):
-    query = select(User)
-    rows = await db.fetch_all(query)
-    return rows
+async def get_users(session: AsyncSession):
+    result = await session.execute(select(User))
+    return result.scalars().all()
 
-async def get_user_by_id(db: Database, user_id: int):
-    query = select(User).where(User.id == user_id)
-    return await db.fetch_one(query)
+async def get_user_by_id(session: AsyncSession, user_id: int):
+    result = await session.execute(select(User).where(User.id == user_id))
+    return result.scalars().first()
 
-async def update_user(db: Database, user_id: int, updates: UserUpdate):
-    query = (
-        User.__table__
-        .update()
-        .where(User.id == user_id)
-        .values(**updates.model_dump(exclude_unset=True))
+async def update_user(session: AsyncSession, user_id: int, updates: UserUpdate):
+    values = updates.model_dump(exclude_unset=True)
+    await session.execute(
+        sqlalchemy_update(User).where(User.id == user_id).values(**values)
     )
-    await db.execute(query)
-    return await get_user_by_id(db, user_id)
+    await session.commit()
+    return await get_user_by_id(session, user_id)
 
-async def delete_user(db: Database, user_id: int) -> bool:
-    query = User.__table__.delete().where(User.id == user_id)
-    result = await db.execute(query)
-    return result > 0
+async def delete_user(session: AsyncSession, user_id: int) -> bool:
+    result = await session.execute(
+        sqlalchemy_delete(User).where(User.id == user_id)
+    )
+    await session.commit()
+    return result.rowcount > 0

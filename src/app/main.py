@@ -1,5 +1,7 @@
+# app/main.py
+
 from fastapi import FastAPI
-from app.api.v1.endpoints import users, devices
+from app.api.v1.endpoints import users, devices, customers, cpes
 from app.db.database import database
 from contextlib import asynccontextmanager
 
@@ -19,3 +21,5 @@ app = FastAPI(
 # Include routes
 app.include_router(users.router, prefix="/api/v1/users", tags=["Users"])
 app.include_router(devices.router, prefix="/api/v1/devices", tags=["Devices"])
+app.include_router(customers.router, prefix="/api/v1/customers", tags=["Customers"])
+app.include_router(cpes.router, prefix="/api/v1/cpes", tags=["CPEs"])

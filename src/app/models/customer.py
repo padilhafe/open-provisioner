@@ -1,6 +1,6 @@
 # app/models/customer.py
 
-from sqlalchemy import Column, Integer, String, ForeignKey
+from sqlalchemy import Column, Integer, String
 from sqlalchemy.orm import relationship
 from app.models import Base
 
@@ -12,5 +12,4 @@ class Customer(Base):
     username = Column(String(100), nullable=True)
     integration_id = Column(Integer, nullable=True)
 
-    # Customer has one CPE
-    cpe = relationship("CPE", back_populates="customer", uselist=False)
+    cpe = relationship("Cpe", back_populates="customer", uselist=False)
