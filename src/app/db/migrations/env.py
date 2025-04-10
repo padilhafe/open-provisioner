@@ -1,7 +1,7 @@
 import os
 import sys
 from logging.config import fileConfig
-from sqlalchemy import engine_from_config, pool
+from sqlalchemy import create_engine, pool
 from alembic import context
 
 # Ajusta o sys.path para conseguir importar o app corretamente
@@ -12,7 +12,7 @@ from app.core.config import Settings
 
 # Define URL do banco para o Alembic
 config = context.config
-config.set_main_option("sqlalchemy.url", Settings.DATABASE_URL)
+config.set_main_option("sqlalchemy.url", Settings.SYNC_DATABASE_URL)
 
 # Configura logging
 fileConfig(config.config_file_name)
@@ -26,7 +26,7 @@ target_metadata = Base.metadata
 def run_migrations_offline() -> None:
     """Executa as migrações em modo offline (sem conectar no banco)."""
     context.configure(
-        url=Settings.DATABASE_URL,
+        url=Settings.SYNC_DATABASE_URL,
         target_metadata=target_metadata,
         literal_binds=True,
         dialect_opts={"paramstyle": "named"},
@@ -36,9 +36,8 @@ def run_migrations_offline() -> None:
 
 def run_migrations_online() -> None:
     """Executa as migrações conectando ao banco."""
-    connectable = engine_from_config(
-        config.get_section(config.config_ini_section),
-        prefix="sqlalchemy.",
+    connectable = create_engine(
+        Settings.SYNC_DATABASE_URL,
         poolclass=pool.NullPool,
     )
 

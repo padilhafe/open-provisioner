@@ -1,6 +1,7 @@
-from app.db.database import database
+# app/db/dependencies.py
+
+from app.db.session import async_session
 
 async def get_db():
-    if not database.is_connected:
-        await database.connect()
-    return database
+    async with async_session() as session:
+        yield session
