@@ -2,7 +2,6 @@
 
 from databases import Database
 from sqlalchemy import select
-from app.models.device import Device
 from app.schemas.device_schema import DeviceCreate, DeviceUpdate
 from app.models.device import Device
 
