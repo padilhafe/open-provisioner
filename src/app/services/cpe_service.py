@@ -5,9 +5,12 @@ from sqlalchemy import select, insert, update, delete
 from sqlalchemy.orm import selectinload
 from app.schemas.cpe_schema import CpeCreate, CpeUpdate
 from app.models.cpe import Cpe
+from app.core.enums import GponOperState
 
 async def create_cpe(db: AsyncSession, cpe_data: CpeCreate) -> Cpe:
-    values = cpe_data.model_dump(mode='json')
+    values = cpe_data.model_dump(exclude_unset=True, mode='json')
+    if "oper_state" not in values:
+        values["oper_state"] = GponOperState.InitialState
     stmt = insert(Cpe).values(**values).returning(Cpe.id)
     result = await db.execute(stmt)
     cpe_id = result.scalar_one()

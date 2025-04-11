@@ -26,6 +26,12 @@ poetry run alembic upgrade head
 poetry run uvicorn app.main:app --reload --app-dir src
 ```
 
+- Para limpar o ambiente
+```
+docker compose -f docker-compose.yml --env-file .env.prod down
+docker volume rm open-provisioner_postgres_data
+```
+
 - Comando para subir o banco de dados de teste
 ```
 docker compose -f docker-compose.dev.yml --env-file .env.dev up -d

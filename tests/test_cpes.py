@@ -14,18 +14,23 @@ async def test_create_cpe(client):
         "snmp_version": 2,
         "snmp_community": "public"
     })
+
     device_id = device.json()["id"]
 
     response = await client.post("/api/v1/cpes/", json={
         "cpe_type": "onu",
-        "state": "active",
+        "oper_state": 4,
         "customer_id": customer_id,
         "device_id": device_id
     })
+
+    print(response.status_code)
+    print(response.json())
+
     data = response.json()
     assert response.status_code == 201
     assert data["cpe_type"] == "onu"
-    assert data["state"] == "active"
+    assert data["oper_state"] == 4
     assert data["customer_id"] == customer_id
     assert data["device_id"] == device_id
     return data["id"]
@@ -82,7 +87,7 @@ async def test_update_cpe(client):
 
     cpe = await client.post("/api/v1/cpes/", json={
         "cpe_type": "onu",
-        "state": "active",
+        "oper_state": 1,
         "customer_id": customer_id,
         "device_id": device_id
     })
@@ -90,11 +95,11 @@ async def test_update_cpe(client):
     cpe_id = cpe.json()["id"]
 
     response = await client.put(f"/api/v1/cpes/{cpe_id}", json={
-        "state": "inactive"
+        "oper_state": 2
     })
     assert response.status_code == 200, response.text
     data = response.json()
-    assert data["state"] == "inactive"
+    assert data["oper_state"] == 2
 
 @pytest.mark.asyncio
 async def test_delete_cpe(client):
