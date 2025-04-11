@@ -16,5 +16,5 @@ class Cpe(Base):
     customer_id = Column(Integer, ForeignKey("customers.id"), unique=True)
     device_id = Column(Integer, ForeignKey("devices.id"))
 
-    customer = relationship("Customer", back_populates="cpe")
-    device = relationship("Device", back_populates="cpes")
+    customer = relationship("Customer", back_populates="cpe", lazy="selectin")
+    device = relationship("Device", back_populates="cpes", lazy="selectin")

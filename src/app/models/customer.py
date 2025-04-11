@@ -12,4 +12,4 @@ class Customer(Base):
     username = Column(String(100), nullable=True)
     integration_id = Column(Integer, nullable=True)
 
-    cpe = relationship("Cpe", back_populates="customer", uselist=False)
+    cpe = relationship("Cpe", back_populates="customer", uselist=False, lazy="selectin")
