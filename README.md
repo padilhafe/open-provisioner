@@ -1,12 +1,16 @@
 # OpenProvisioner
 
+- O projeto precisa do pacote poetry instalado no sistema.
+
 - Criar o arquivo de .env informando qual o tipo de ambiente
 ```
-ENV=dev
+ENV=prod
 ```
 
 - Criar o arquivo .env.ambiente com as configurações
 ```
+# .env.prod
+
 # Project Settings
 PROJECT_NAME=OpenProvisioner
 
@@ -14,15 +18,17 @@ PROJECT_NAME=OpenProvisioner
 DB_ENGINE=mariadb
 DB_HOST=localhost
 DB_PORT=3307
-DB_NAME=test_db
-DB_USER=test_user
-DB_PASSWORD=test_pass
+DB_NAME=openprovisioner_db
+DB_USER=dbuser
+DB_PASSWORD=dbpass
 ```
 
 - Comando para rodar o projeto:
 ```
+poetry install
 docker compose -f docker-compose.yml --env-file .env.prod up -d
 poetry run alembic upgrade head
+poetry run python src/app/manage.py db-seed
 poetry run uvicorn app.main:app --reload --app-dir src
 ```
 
@@ -30,12 +36,6 @@ poetry run uvicorn app.main:app --reload --app-dir src
 ```
 docker compose -f docker-compose.yml --env-file .env.prod down
 docker volume rm open-provisioner_postgres_data
-```
-
-- Comando para subir o banco de dados de teste
-```
-docker compose -f docker-compose.dev.yml --env-file .env.dev up -d
-poetry run alembic upgrade head
 ```
 
 - Comando para rodar os testes:
