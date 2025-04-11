@@ -16,15 +16,15 @@ async def create(customer: CustomerCreate, db: Database = Depends(get_db)):
 async def list_all(db: Database = Depends(get_db)):
     return await customer_service.get_customers(db)
 
-@router.get("/{customer_id}", response_model=CustomerOut, status_code=status.HTTP_200_OK)
+@router.get("/search-id/{customer_id}", response_model=CustomerOut, status_code=status.HTTP_200_OK)
 async def retrieve(customer_id: int, db: Database = Depends(get_db)):
     customer = await customer_service.get_customer_by_id(db, customer_id)
     if not customer:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Customer not found")
     return customer
 
-@router.get("/{customer_username}", response_model=CustomerOut, status_code=status.HTTP_200_OK)
-async def retrieve(customer_username: int, db: Database = Depends(get_db)):
+@router.get("/search-username/{customer_username}", response_model=CustomerOut, status_code=status.HTTP_200_OK)
+async def retrieve_customer_by_username(customer_username: str, db: Database = Depends(get_db)):
     customer = await customer_service.get_customer_by_username(db, customer_username)
     if not customer:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Customer not found")
@@ -37,7 +37,7 @@ async def update(customer_id: int, updates: CustomerUpdate, db: Database = Depen
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Customer not found")
     return customer
 
-@router.delete("/{customer_id}", status_code=status.HTTP_204_NO_CONTENT)
+@router.delete("/search-id/{customer_id}", status_code=status.HTTP_204_NO_CONTENT)
 async def delete(customer_id: int, db: Database = Depends(get_db)):
     success = await customer_service.delete_customer(db, customer_id)
     if not success:

@@ -2,9 +2,14 @@
 
 import pytest
 
+CUSTOMERS_BASE = "/api/v1/customers"
+
+def customer_by_id_path(cid): return f"{CUSTOMERS_BASE}/search-id/{cid}"
+def customer_by_username_path(username): return f"{CUSTOMERS_BASE}/search-username/{username}"
+
 @pytest.mark.asyncio
 async def test_create_customer(client):
-    response = await client.post("/api/v1/customers/", json={
+    response = await client.post(f"{CUSTOMERS_BASE}/", json={
         "name": "João Silva",
         "username": "joaosilva",
         "integration_id": 101
@@ -19,11 +24,11 @@ async def test_create_customer(client):
 
 @pytest.mark.asyncio
 async def test_list_all_customers(client):
-    await client.post("/api/v1/customers/", json={
+    await client.post(f"{CUSTOMERS_BASE}/", json={
         "name": "Maria Souza",
         "username": "mariasouza"
     })
-    response = await client.get("/api/v1/customers/")
+    response = await client.get(f"{CUSTOMERS_BASE}/")
     data = response.json()
     assert response.status_code == 200
     assert isinstance(data, list)
@@ -31,11 +36,11 @@ async def test_list_all_customers(client):
 
 @pytest.mark.asyncio
 async def test_retrieve_customer_by_id(client):
-    create_response = await client.post("/api/v1/customers/", json={
+    create_response = await client.post(f"{CUSTOMERS_BASE}/", json={
         "name": "Carlos Silva"
     })
     customer_id = create_response.json()["id"]
-    response = await client.get(f"/api/v1/customers/{customer_id}")
+    response = await client.get(customer_by_id_path(customer_id))
     data = response.json()
     assert response.status_code == 200
     assert data["id"] == customer_id
@@ -43,30 +48,29 @@ async def test_retrieve_customer_by_id(client):
 
 @pytest.mark.asyncio
 async def test_retrieve_customer_by_username(client):
-    create_response = await client.post("/api/v1/customers/", json={
+    create_response = await client.post(f"{CUSTOMERS_BASE}/", json={
         "name": "Carlos Silva",
         "username": "carlos.silva"
     })
-    customer_id = create_response.json()["id"]
-    response = await client.get(f"/api/v1/customers/{customer_id}")
+    customer_username = create_response.json()["username"]
+    response = await client.get(customer_by_username_path(customer_username))
     data = response.json()
     assert response.status_code == 200
-    assert data["id"] == customer_id
-    assert data["username"] == "carlos.silva"
+    assert data["username"] == customer_username
 
 @pytest.mark.asyncio
 async def test_retrieve_customer_not_found(client):
-    response = await client.get("/api/v1/customers/9999")
+    response = await client.get(customer_by_id_path(9999))
     assert response.status_code == 404
     assert response.json()["detail"] == "Customer not found"
 
 @pytest.mark.asyncio
 async def test_update_customer(client):
-    create_response = await client.post("/api/v1/customers/", json={
+    create_response = await client.post(f"{CUSTOMERS_BASE}/", json={
         "name": "Roberto Rocha"
     })
     customer_id = create_response.json()["id"]
-    response = await client.put(f"/api/v1/customers/{customer_id}", json={
+    response = await client.put(f"{CUSTOMERS_BASE}/{customer_id}", json={
         "name": "Roberto Rocha Jr.",
         "username": "robertojr",
         "integration_id": 202
@@ -80,7 +84,7 @@ async def test_update_customer(client):
 
 @pytest.mark.asyncio
 async def test_update_customer_not_found(client):
-    response = await client.put("/api/v1/customers/9999", json={
+    response = await client.put(f"{CUSTOMERS_BASE}/9999", json={
         "name": "Inexistente"
     })
     assert response.status_code == 404
@@ -88,17 +92,17 @@ async def test_update_customer_not_found(client):
 
 @pytest.mark.asyncio
 async def test_delete_customer(client):
-    create_response = await client.post("/api/v1/customers/", json={
+    create_response = await client.post(f"{CUSTOMERS_BASE}/", json={
         "name": "Lucas Lima"
     })
     customer_id = create_response.json()["id"]
-    response = await client.delete(f"/api/v1/customers/{customer_id}")
+    response = await client.delete(customer_by_id_path(customer_id))
     assert response.status_code == 204
-    get_response = await client.get(f"/api/v1/customers/{customer_id}")
+    get_response = await client.get(customer_by_id_path(customer_id))
     assert get_response.status_code == 404
 
 @pytest.mark.asyncio
 async def test_delete_customer_not_found(client):
-    response = await client.delete("/api/v1/customers/9999")
+    response = await client.delete(customer_by_id_path(9999))
     assert response.status_code == 404
     assert response.json()["detail"] == "Customer not found"
