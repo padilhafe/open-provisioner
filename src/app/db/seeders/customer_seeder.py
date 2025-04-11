@@ -6,9 +6,10 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 
 from app.models.customer import Customer
+from app.core.types import CUSTOMER_STATUS
 
-async def create_customer(session: AsyncSession, name: str, username: str = None, integration_id: int = None) -> Customer:
-    customer = Customer(name=name, username=username, integration_id=integration_id)
+async def create_customer(session: AsyncSession, name: str, username: str = None, status: str = "Offline", integration_id: int = None) -> Customer:
+    customer = Customer(name=name, username=username, integration_id=integration_id, status=status)
     session.add(customer)
     await session.flush()
     return customer
@@ -25,6 +26,7 @@ async def seed_customers(session: AsyncSession):
         name = f"Cliente Exemplo {i}"
         username = ''.join(random.choices(string.ascii_lowercase, k=8))
         integration_id = random.randint(1000, 9999)
+        status = random.choice(CUSTOMER_STATUS)
 
         await create_customer(session, name=name, username=username, integration_id=integration_id)
 

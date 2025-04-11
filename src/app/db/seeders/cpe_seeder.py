@@ -9,6 +9,7 @@ from app.models.device import Device
 from app.db.seeders.customer_seeder import create_customer
 from app.core.enums import GponOperState
 from app.core.types import CPE_TYPE
+from app.core.types import CUSTOMER_STATUS
 
 async def seed_cpes(session: AsyncSession):
     result = await session.execute(select(Device))
@@ -21,6 +22,7 @@ async def seed_cpes(session: AsyncSession):
                 name=f"Cliente {device.id}-{i}",
                 username=f"user_{device.id}_{i}",
                 integration_id=random.randint(1000, 9999),
+                status = random.choice(CUSTOMER_STATUS)
             )
 
             cpe = Cpe(

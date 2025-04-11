@@ -37,7 +37,8 @@ async def test_list_all_customers(client):
 @pytest.mark.asyncio
 async def test_retrieve_customer_by_id(client):
     create_response = await client.post(f"{CUSTOMERS_BASE}/", json={
-        "name": "Carlos Silva"
+        "name": "Carlos Silva",
+        "username": "carlos.silva"
     })
     customer_id = create_response.json()["id"]
     response = await client.get(customer_by_id_path(customer_id))
@@ -67,7 +68,8 @@ async def test_retrieve_customer_not_found(client):
 @pytest.mark.asyncio
 async def test_update_customer(client):
     create_response = await client.post(f"{CUSTOMERS_BASE}/", json={
-        "name": "Roberto Rocha"
+        "name": "Roberto Rocha",
+        "username": "roberto.rocha"
     })
     customer_id = create_response.json()["id"]
     response = await client.put(f"{CUSTOMERS_BASE}/{customer_id}", json={
@@ -85,7 +87,8 @@ async def test_update_customer(client):
 @pytest.mark.asyncio
 async def test_update_customer_not_found(client):
     response = await client.put(f"{CUSTOMERS_BASE}/9999", json={
-        "name": "Inexistente"
+        "name": "Padre Quevedo",
+        "username": "non.ecxiste"
     })
     assert response.status_code == 404
     assert response.json()["detail"] == "Customer not found"
@@ -93,7 +96,8 @@ async def test_update_customer_not_found(client):
 @pytest.mark.asyncio
 async def test_delete_customer(client):
     create_response = await client.post(f"{CUSTOMERS_BASE}/", json={
-        "name": "Lucas Lima"
+        "name": "Lucas Lima",
+        "username": "lucas.lima"
     })
     customer_id = create_response.json()["id"]
     response = await client.delete(customer_by_id_path(customer_id))

@@ -4,7 +4,7 @@ import pytest
 
 @pytest.mark.asyncio
 async def test_create_cpe(client):
-    customer = await client.post("/api/v1/customers/", json={"name": "Cliente CPE"})
+    customer = await client.post("/api/v1/customers/", json={"name": "Cliente F", "username": "cliente.f"})
     customer_id = customer.json()["id"]
 
     device = await client.post("/api/v1/devices/", json={
@@ -44,7 +44,7 @@ async def test_list_all_cpes(client):
 
 @pytest.mark.asyncio
 async def test_retrieve_cpe(client):
-    customer = await client.post("/api/v1/customers/", json={"name": "Cliente X"})
+    customer = await client.post("/api/v1/customers/", json={"name": "Cliente X", "username": "cliente.x"})
     customer_id = customer.json()["id"]
 
     device = await client.post("/api/v1/devices/", json={
@@ -73,7 +73,7 @@ async def test_retrieve_cpe(client):
 
 @pytest.mark.asyncio
 async def test_update_cpe(client):
-    customer = await client.post("/api/v1/customers/", json={"name": "Cliente Y"})
+    customer = await client.post("/api/v1/customers/", json={"name": "Cliente Y", "username": "cliente.y"})
     customer_id = customer.json()["id"]
 
     device = await client.post("/api/v1/devices/", json={
@@ -103,7 +103,7 @@ async def test_update_cpe(client):
 
 @pytest.mark.asyncio
 async def test_delete_cpe(client):
-    customer = await client.post("/api/v1/customers/", json={"name": "Cliente Z"})
+    customer = await client.post("/api/v1/customers/", json={"name": "Cliente Z", "username": "cliente.z"})
     customer_id = customer.json()["id"]
     device = await client.post("/api/v1/devices/", json={
         "name": "device-z",

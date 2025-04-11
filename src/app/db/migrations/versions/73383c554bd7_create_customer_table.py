@@ -10,6 +10,7 @@ from typing import Sequence, Union
 from alembic import op
 import sqlalchemy as sa
 
+from app.core.types import CUSTOMER_STATUS
 
 # revision identifiers, used by Alembic.
 revision: str = '73383c554bd7'
@@ -23,7 +24,8 @@ def upgrade() -> None:
     op.create_table('customers',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('name', sa.String(length=100), nullable=False),
-    sa.Column('username', sa.String(length=100), nullable=True),
+    sa.Column('username', sa.String(length=100), nullable=False),
+    sa.Column('status', sa.String(length=32), nullable=False, server_default=CUSTOMER_STATUS[0]),
     sa.Column('integration_id', sa.Integer(), nullable=True),
     sa.PrimaryKeyConstraint('id')
     )

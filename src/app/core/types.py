@@ -17,3 +17,9 @@ USER_ROLES = [
     "operator",
     "techinician"
 ]
+
+CUSTOMER_STATUS = [
+    "offline",
+    "online",
+    "with_pendencies"
+]
