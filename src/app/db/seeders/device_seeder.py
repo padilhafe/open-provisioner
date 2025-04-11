@@ -11,11 +11,13 @@ async def seed_devices(session: AsyncSession):
 
     devices = [
         Device(
-            name=f"OLT {i}", 
-            device_type="olt", 
+            hostname=f"OLT {i}", 
+            device_type="huawei", 
             snmp_version=2, 
             snmp_community="public", 
-            mgmt_ipv4=f"192.168.0.{i}"
+            device_mgmt_ipv4=f"192.168.0.{i}",
+            device_username="sshuser",
+            device_password="sshpass"
         )
         for i in range(5)
     ]

@@ -1,9 +1,9 @@
 # app/core/types.py
 
 DEVICE_TYPE = [
-    "router",
-    "switch",
-    "olt"
+    "mikrotik",
+    "huawei",
+    "huawei_smartax"
 ]
 
 CPE_TYPE = [

@@ -23,6 +23,13 @@ async def retrieve(device_id: int, db: Database = Depends(get_db)):
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Device not found")
     return user
 
+@router.get("/{device_id}/get-unauthorized-onu", status_code=status.HTTP_200_OK)
+async def retrieve(device_id: int, db: Database = Depends(get_db)):
+    unauthorized_onus = await device_service.get_device_unauthorized_onu(db, device_id)
+    if not unauthorized_onus:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="No ONU pending authorization")
+    return unauthorized_onus
+
 @router.put("/{device_id}", response_model=DeviceOut, status_code=status.HTTP_200_OK)
 async def update(device_id: int, device_update: DeviceUpdate, db: Database = Depends(get_db)):
     user = await device_service.update_device(db, device_id, device_update)
