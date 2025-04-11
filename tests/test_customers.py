@@ -30,7 +30,7 @@ async def test_list_all_customers(client):
     assert len(data) > 0
 
 @pytest.mark.asyncio
-async def test_retrieve_customer(client):
+async def test_retrieve_customer_by_id(client):
     create_response = await client.post("/api/v1/customers/", json={
         "name": "Carlos Silva"
     })
@@ -40,6 +40,19 @@ async def test_retrieve_customer(client):
     assert response.status_code == 200
     assert data["id"] == customer_id
     assert data["name"] == "Carlos Silva"
+
+@pytest.mark.asyncio
+async def test_retrieve_customer_by_username(client):
+    create_response = await client.post("/api/v1/customers/", json={
+        "name": "Carlos Silva",
+        "username": "carlos.silva"
+    })
+    customer_id = create_response.json()["id"]
+    response = await client.get(f"/api/v1/customers/{customer_id}")
+    data = response.json()
+    assert response.status_code == 200
+    assert data["id"] == customer_id
+    assert data["username"] == "carlos.silva"
 
 @pytest.mark.asyncio
 async def test_retrieve_customer_not_found(client):

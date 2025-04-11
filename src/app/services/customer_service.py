@@ -28,6 +28,15 @@ async def get_customer_by_id(db: AsyncSession, customer_id: int) -> Customer | N
     result = await db.execute(stmt)
     return result.scalar_one_or_none()
 
+async def get_customer_by_username(db: AsyncSession, customer_username: str) -> Customer | None:
+    stmt = (
+        select(Customer)
+        .options(selectinload(Customer.cpe))
+        .where(Customer.username == customer_username)
+    )
+    result = await db.execute(stmt)
+    return result.scalar_one_or_none()
+
 async def update_customer(db: AsyncSession, customer_id: int, updates: CustomerUpdate) -> Customer | None:
     values = updates.model_dump(exclude_unset=True, mode='json')
     stmt = update(Customer).where(Customer.id == customer_id).values(**values).returning(Customer.id)

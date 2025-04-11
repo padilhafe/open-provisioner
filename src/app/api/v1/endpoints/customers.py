@@ -23,6 +23,13 @@ async def retrieve(customer_id: int, db: Database = Depends(get_db)):
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Customer not found")
     return customer
 
+@router.get("/{customer_username}", response_model=CustomerOut, status_code=status.HTTP_200_OK)
+async def retrieve(customer_username: int, db: Database = Depends(get_db)):
+    customer = await customer_service.get_customer_by_username(db, customer_username)
+    if not customer:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Customer not found")
+    return customer
+
 @router.put("/{customer_id}", response_model=CustomerOut, status_code=status.HTTP_200_OK)
 async def update(customer_id: int, updates: CustomerUpdate, db: Database = Depends(get_db)):
     customer = await customer_service.update_customer(db, customer_id, updates)
