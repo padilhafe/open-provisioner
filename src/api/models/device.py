@@ -11,6 +11,7 @@ class Device(Base):
     id = Column(Integer, primary_key=True, index=True)
     hostname = Column(String(100), nullable=False)
     device_type = Column(String(32), nullable=False)
+    device_hostname = Column(String(32), nullable=True)
     
     device_mgmt_ipv4: Optional[str] = Column(String(16), unique=True, nullable=True)
     device_username: Optional[str] = Column(String(32), nullable=True)

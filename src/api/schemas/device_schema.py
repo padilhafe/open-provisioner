@@ -8,6 +8,7 @@ from api.core.enums import SnmpVersion
 class DeviceCreate(BaseModel):
     hostname: str
     device_type: str
+    device_hostname: Optional[str] = None
 
     device_mgmt_ipv4: Optional[IPv4Address] = None
     device_username: Optional[str] = None
@@ -21,6 +22,7 @@ class DeviceCreate(BaseModel):
 class DeviceUpdate(BaseModel):
     hostname: Optional[str] = None
     device_type: Optional[str] = None
+    device_hostname: Optional[str] = None
 
     device_mgmt_ipv4: Optional[IPv4Address] = None
     device_username: Optional[str] = None
@@ -34,6 +36,7 @@ class DeviceOut(BaseModel):
     id: int
     hostname: str
     device_type: str
+    device_hostname: Optional[str] = None
     
     device_mgmt_ipv4: IPv4Address
     device_username: str
