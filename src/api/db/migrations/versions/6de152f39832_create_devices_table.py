@@ -23,6 +23,7 @@ def upgrade() -> None:
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('hostname', sa.String(length=100), nullable=False),
     sa.Column('device_type', sa.String(length=32), nullable=False),
+    sa.Column('device_hostname', sa.String(length=32), nullable=True),
 
     sa.Column('device_mgmt_ipv4', sa.String(length=16), nullable=True),
     sa.Column('device_username', sa.String(length=16), nullable=True),

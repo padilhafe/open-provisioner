@@ -42,11 +42,11 @@ def parse_autofind_output(output):
 
     return results
 
-def get_unauthorized_onu(mgmt_ipv4: str, device_username: str, device_password: str, device_type: str, port: int = 22):
+def get_unauthorized_onu(device_mgmt_ipv4: str, device_username: str, device_password: str, device_type: str, port: int = 22):
     try:
         connection = ConnectHandler(
             device_type=device_type,
-            host=mgmt_ipv4,
+            host=device_mgmt_ipv4,
             username=device_username,
             password=device_password,
             port=port
