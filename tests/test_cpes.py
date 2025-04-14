@@ -8,10 +8,14 @@ async def test_create_cpe(client):
     customer_id = customer.json()["id"]
 
     device = await client.post("/api/v1/devices/", json={
-        "name": "cpe-device",
+        "hostname": "cpe-device",
         "device_type": "router",
-        "mgmt_ipv4": "192.168.1.10",
+        "device_mgmt_ipv4": "192.168.1.10",
+        "device_username": "sshuser",
+        "device_password": "sshpass",
+        "device_mgmt_port": 22,
         "snmp_version": 2,
+        "snmp_port": 161,
         "snmp_community": "public"
     })
 
@@ -48,10 +52,14 @@ async def test_retrieve_cpe(client):
     customer_id = customer.json()["id"]
 
     device = await client.post("/api/v1/devices/", json={
-        "name": "device-x",
-        "device_type": "olt",
-        "mgmt_ipv4": "192.168.1.11",
+        "hostname": "device x",
+        "device_type": "mikrotik",
+        "device_mgmt_ipv4": "192.168.1.140",
+        "device_username": "sshuser",
+        "device_password": "sshpass",
+        "device_mgmt_port": 22,
         "snmp_version": 2,
+        "snmp_port": 161,
         "snmp_community": "public"
     })
 
@@ -77,10 +85,14 @@ async def test_update_cpe(client):
     customer_id = customer.json()["id"]
 
     device = await client.post("/api/v1/devices/", json={
-        "name": "device-y",
-        "device_type": "olt",
-        "mgmt_ipv4": "192.168.1.12",
+        "hostname": "device-y",
+        "device_type": "huawei_smartax",
+        "device_mgmt_ipv4": "192.168.1.14",
+        "device_username": "sshuser",
+        "device_password": "sshpass",
+        "device_mgmt_port": 22,
         "snmp_version": 2,
+        "snmp_port": 161,
         "snmp_community": "public"
     })
     device_id = device.json()["id"]
@@ -106,10 +118,14 @@ async def test_delete_cpe(client):
     customer = await client.post("/api/v1/customers/", json={"name": "Cliente Z", "username": "cliente.z"})
     customer_id = customer.json()["id"]
     device = await client.post("/api/v1/devices/", json={
-        "name": "device-z",
-        "device_type": "router",
-        "mgmt_ipv4": "192.168.1.13",
+        "hostname": "device-z",
+        "device_type": "huawei",
+        "device_mgmt_ipv4": "192.168.1.21",
+        "device_username": "sshuser",
+        "device_password": "sshpass",
+        "device_mgmt_port": 22,
         "snmp_version": 2,
+        "snmp_port": 161,
         "snmp_community": "public"
     })
     device_id = device.json()["id"]
