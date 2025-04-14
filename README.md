@@ -28,8 +28,8 @@ DB_PASSWORD=dbpass
 poetry install
 docker compose -f docker-compose.yml --env-file .env.prod up -d
 poetry run alembic upgrade head
-poetry run python src/app/manage.py db-seed
-poetry run uvicorn app.main:app --reload --app-dir src
+poetry run python src/api/manage.py db-seed
+poetry run uvicorn api.main:app --reload --app-dir src
 ```
 
 - Para limpar o ambiente

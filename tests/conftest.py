@@ -4,8 +4,8 @@ import pytest
 import pytest_asyncio
 from httpx import AsyncClient
 from httpx._transports.asgi import ASGITransport
-from app.main import app
-from app.db.database import database
+from api.main import app
+from api.db.database import database
 
 # Override the default event_loop fixture to have session scope
 @pytest.fixture(scope="session")
