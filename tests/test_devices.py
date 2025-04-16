@@ -30,6 +30,7 @@ async def test_create_device(client):
 async def test_list_all_devices(client):
     await client.post("/api/v1/devices/", json={
         "hostname": "hw-olt-02",
+        "device_hostname": "hw-olt-02",
         "device_type": "huawei_smartax",
         "device_mgmt_ipv4": "192.168.100.43",
         "device_username": "sshuser",
@@ -42,18 +43,23 @@ async def test_list_all_devices(client):
     response = await client.get("/api/v1/devices/")
     data = response.json()
     assert response.status_code == 200
-    assert isinstance(data, list)
-    assert len(data) > 0
-    assert data[0]["hostname"] == "hw-olt-02"
-    assert data[0]["device_type"] == "huawei_smartax"
-    assert data[0]["device_mgmt_ipv4"] == "192.168.100.43"
-    assert data[0]["snmp_version"] == 2
-    assert data[0]["snmp_community"] == "public"
+    assert "devices" in data
+    assert len(data["devices"]) > 0
+
+    device = data["devices"][0]
+
+    assert device["hostname"] == "hw-olt-02"
+    assert device["device_hostname"] == "hw-olt-02"
+    assert device["device_type"] == "huawei_smartax"
+    assert device["device_mgmt_ipv4"] == "192.168.100.43"
+    assert device["snmp_version"] == 2
+    assert device["snmp_community"] == "public"
 
 @pytest.mark.asyncio
 async def test_retrieve_device(client):
     create_response = await client.post("/api/v1/devices/", json={
         "hostname": "hw-olt-03",
+        "device_hostname": "hw.olt.03",
         "device_type": "olt",
         "device_mgmt_ipv4": "192.168.100.44",
         "device_username": "sshuser",
@@ -70,6 +76,7 @@ async def test_retrieve_device(client):
     assert response.status_code == 200
     assert data["id"] == device_id
     assert data["hostname"] == "hw-olt-03"
+    assert data["device_hostname"] == "hw.olt.03"
     assert data["device_type"] == "olt"
     assert data["device_mgmt_ipv4"] == "192.168.100.44"
     assert data["snmp_version"] == 2

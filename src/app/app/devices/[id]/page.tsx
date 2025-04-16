@@ -16,10 +16,17 @@ export default function DeviceUsersPage() {
 
   useEffect(() => {
     async function fetchUsers() {
+      if (!id) {
+        setError('ID do dispositivo não encontrado.');
+        setLoading(false);
+        return;
+      }
+
       try {
         const res = await fetch(`http://localhost:8000/api/v1/devices/${id}/get-current-users`);
         if (!res.ok) throw new Error('Erro ao buscar usuários do dispositivo');
         const json: UsersResponse = await res.json();
+
         setData(json);
       } catch (err: any) {
         setError(err.message || 'Erro desconhecido');
@@ -28,9 +35,7 @@ export default function DeviceUsersPage() {
       }
     }
 
-    if (id) {
-      fetchUsers();
-    }
+    fetchUsers();
   }, [id]);
 
   if (loading) return <p className="p-4">Carregando usuários...</p>;
@@ -40,13 +45,13 @@ export default function DeviceUsersPage() {
     <div className="p-6">
       <h1 className="text-2xl font-bold mb-4">Usuários cadastrados - {data?.device}</h1>
 
-      {data?.users.length === 0 ? (
-        <p>Nenhum usuário conectado.</p>
+      {data?.users?.length === 0 ? (
+        <p>Nenhum usuário cadastrado.</p>
       ) : (
         <ul className="list-disc list-inside">
-          {data?.users.map((user, index) => (
-            <li key={index} className="text-gray-700">{user}</li>
-          ))}
+          {data?.users?.map((user, index) => {
+            return <li key={index} className="text-gray-700">{user}</li>;
+          })}
         </ul>
       )}
 

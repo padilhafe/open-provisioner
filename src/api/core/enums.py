@@ -15,3 +15,8 @@ class GponOperState(int, Enum):
     OperationState = 5
     PopupState = 6
     EmergencyStopState = 7
+
+class OpenBmcPowerActions(str, Enum):
+    on = "On"
+    force_off = "ForceOff"
+    force_restart = "ForceRestart"

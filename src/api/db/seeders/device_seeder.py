@@ -11,7 +11,7 @@ async def seed_devices(session: AsyncSession):
 
     devices = [
         Device(
-            hostname=f"OLT {i}", 
+            hostname=f"Switch {i}", 
             device_type="huawei", 
             snmp_version=2, 
             snmp_community="public", 

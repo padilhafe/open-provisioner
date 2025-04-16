@@ -1,8 +1,9 @@
 # api/services/device_service.py
 
 import asyncio
+import api.queries.actions.open_bmc as open_bmc
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select, insert, update, delete
+from sqlalchemy import select, insert, update, delete, func
 from sqlalchemy.orm import selectinload
 from api.models.device import Device
 from api.schemas.device_schema import DeviceCreate, DeviceUpdate
@@ -17,17 +18,24 @@ async def create_device(db: AsyncSession, device_data: DeviceCreate) -> Device:
     await db.commit()
     return await get_device_by_id(db, device_id)
 
-async def get_devices(db: AsyncSession) -> list[Device]:
-    stmt = select(Device)
+async def get_devices(db: AsyncSession, page: int = 1, limit: int = 5):
+    offset = (page - 1) * limit
+
+    stmt = select(Device).offset(offset).limit(limit)
     result = await db.execute(stmt)
-    return result.scalars().all()
+    devices = result.scalars().all()
+
+    count_stmt = select(func.count()).select_from(Device)
+    total = (await db.execute(count_stmt)).scalar_one()
+
+    return devices, total
 
 async def get_device_by_id(db: AsyncSession, device_id: int) -> Device | None:
     stmt = select(Device).where(Device.id == device_id)
     result = await db.execute(stmt)
     return result.scalar_one_or_none()
 
-async def get_current_users(db: AsyncSession, device_id: int) -> dict:
+async def get_current_users(db: AsyncSession, device_id: int) -> list[dict]:
     stmt = select(Device).where(Device.id == device_id)
     result = await db.execute(stmt)
     device = result.scalar_one_or_none()
@@ -35,7 +43,7 @@ async def get_current_users(db: AsyncSession, device_id: int) -> dict:
     if not device:
         raise ValueError("Dispositivo não encontrado")
 
-    users = await asyncio.to_thread(
+    data_json = await asyncio.to_thread(
         common.get_users,
         device_mgmt_ipv4=device.device_mgmt_ipv4,
         device_username=device.device_username,
@@ -44,14 +52,10 @@ async def get_current_users(db: AsyncSession, device_id: int) -> dict:
         port=device.device_mgmt_port
     )
 
-    if not isinstance(users, list):
+    if not isinstance(data_json, list):
         raise TypeError("Esperado uma lista de dados, mas recebeu outro tipo.")
 
-    return {
-        "device": device.hostname,
-        "users": users
-    }
-
+    return {"users": data_json}
 
 async def get_device_unauthorized_onu(db: AsyncSession, device_id: int) -> list[dict]:
     stmt = select(Device).where(Device.id == device_id)
@@ -90,3 +94,17 @@ async def delete_device(db: AsyncSession, device_id: int) -> bool:
     result = await db.execute(stmt)
     await db.commit()
     return result.rowcount > 0
+
+async def power_actions(db: AsyncSession, device_id: int, action: str):
+    stmt = select(Device).where(Device.id == device_id)
+    result = await db.execute(stmt)
+    device = result.scalar_one_or_none()
+
+    if not device:
+        raise ValueError("Dispositivo não encontrado")
+
+    if device.device_type == "open_bmc":
+        return open_bmc.power_actions(device, action)
+    
+    else:
+        return { "tipo": "não suportado" }

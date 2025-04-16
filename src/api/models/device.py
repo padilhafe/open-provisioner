@@ -22,4 +22,4 @@ class Device(Base):
     snmp_port: int = Column(Integer, nullable=False, default=161)
     snmp_community: Optional[str] = Column(String(32), nullable=True)
 
-    cpes = relationship("Cpe", back_populates="device", lazy="selectin")
+    cpes = relationship("Cpe", back_populates="device", lazy="noload")

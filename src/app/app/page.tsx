@@ -1,103 +1,129 @@
-import Image from "next/image";
+// pages/index.tsx
 
-export default function Home() {
+'use client';
+
+import Navbar from "@/components/NavBar";
+import React, { useState, useEffect } from "react";
+
+const Home = () => {
+  const [devices, setDevices] = useState<any[]>([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+
+  const devicesPerPage = 5;
+
+  const fetchDevices = async (page: number) => {
+    try {
+      const res = await fetch(`http://127.0.0.1:8000/api/v1/devices/?page=${page}&limit=${devicesPerPage}`);
+      const data = await res.json();
+      setDevices(data.devices);
+      setTotalPages(Math.ceil(data.total / devicesPerPage));
+    } catch (error) {
+      console.error("Erro ao buscar dispositivos", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchDevices(currentPage);
+  }, [currentPage]);
+
+  const handlePrevPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
+
+  const handleNextPage = () => {
+    if (currentPage < totalPages) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
+
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm/6 text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-[family-name:var(--font-geist-mono)] font-semibold">
-              app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+    <div className="min-h-screen bg-gray-100">
+      <Navbar />
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
-        </div>
+      <main className="p-6">
+        <section className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+          {/* Visão Geral da Rede */}
+          <div className="bg-white p-6 rounded-lg shadow-lg">
+            <h2 className="text-xl font-semibold mb-4">Visão Geral</h2>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="p-4 bg-green-100 rounded-lg">
+                <h3 className="font-medium">Dispositivos Ativos</h3>
+                <p>5</p>
+              </div>
+              <div className="p-4 bg-yellow-100 rounded-lg">
+                <h3 className="font-medium">Alertas Pendentes</h3>
+                <p>3</p>
+              </div>
+            </div>
+          </div>
+
+          {/* Ações Rápidas */}
+          <div className="bg-white p-6 rounded-lg shadow-lg">
+            <h2 className="text-xl font-semibold mb-4">Ações Rápidas</h2>
+            <button className="w-full bg-blue-500 text-white p-3 rounded-lg hover:bg-blue-600">
+              Configurar Dispositivos
+            </button>
+            <button className="w-full bg-gray-300 text-gray-700 p-3 mt-4 rounded-lg hover:bg-gray-400">
+              Monitorar Rede
+            </button>
+          </div>
+        </section>
+
+        {/* Tabela de Dispositivos */}
+        <section className="mt-8">
+          <h2 className="text-2xl font-semibold mb-4">Dispositivos</h2>
+          <table className="min-w-full bg-white border border-gray-300 rounded-lg shadow-md">
+            <thead>
+              <tr className="bg-gray-200">
+                <th className="px-4 py-2 text-left">Hostname</th>
+                <th className="px-4 py-2 text-left">Tipo</th>
+                <th className="px-4 py-2 text-left">IP de Gerência</th>
+                <th className="px-4 py-2 text-left">Ações</th>
+              </tr>
+            </thead>
+            <tbody>
+              {devices?.map((device: any) => (
+                <tr key={device.id} className="hover:bg-gray-100">
+                  <td className="px-4 py-2">{device.hostname}</td>
+                  <td className="px-4 py-2">{device.device_type}</td>
+                  <td className="px-4 py-2">{device.device_mgmt_ipv4}</td>
+                  <td className="px-4 py-2">
+                    <button className="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600">
+                      Ver Detalhes
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+
+          {/* Paginação */}
+          <div className="flex justify-between mt-6">
+            <button
+              className="bg-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-400"
+              onClick={handlePrevPage}
+              disabled={currentPage === 1}
+            >
+              Anterior
+            </button>
+            <span className="self-center text-lg">
+              Página {currentPage} de {totalPages}
+            </span>
+            <button
+              className="bg-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-400"
+              onClick={handleNextPage}
+              disabled={currentPage === totalPages}
+            >
+              Próxima
+            </button>
+          </div>
+        </section>
       </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
     </div>
   );
-}
+};
+
+export default Home;
